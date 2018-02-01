@@ -2,52 +2,21 @@ class App extends React.Component {
   constructor (props) {
     super(props);
     this.state = {
-      searchText: '',
-      videos: window.exampleVideoData,
-      selectedVideo: window.exampleVideoData[0]
+      searchText: 'intro to javascript',
+      videos: [],
+      selectedVideo: {}
     };
+    this.search();
   }
+
   search() {
-    alert(this.state.searchText);
-    var url = 'https://www.googleapis.com/youtube/v3/search'; ///?q=' + this.state.searchText + '&maxResults=5&type=video&part=snippet&key=' + window.YOUTUBE_API_KEY + '&videoEmbeddable=true'; //'https://googleapis.com/youtube/v3/search';
-    
-    var data = {
-      q: this.state.searchText,
-      maxResults: 5,
-      part: 'snippet',
-      key: window.YOUTUBE_API_KEY,
-      type: 'video',
-      videoEmbeddable: 'true'
+    var cb = (data) => {
+      this.setState({
+        videos: data,
+        selectedVideo: data[0] 
+      });
     };
-
-    $.ajax({
-      url: url,
-      type: 'GET',
-      data: data,
-      dataType: 'json',
-      success: (data) => {
-        console.log(data);
-      }
-    });
-
-    /*
-    var data = {
-      method: 'GET',
-      headers: {
-        part: 'snippet',
-        key: window.YOUTUBE_API_KEY,
-        q: this.state.searchText,
-        maxResults: 5,
-        type: 'video',
-        videoEmbeddable: 'true'
-      },
-    };
-    //window.YOUTUBE_API_KEY
-    fetch(url, data).then((response)=> (
-      console.log(response)
-    ));
-    */
-
+    this.props.searchYouTube({query: this.props.searchText}, cb);
   }
 
   searchInputUpdate(e) {

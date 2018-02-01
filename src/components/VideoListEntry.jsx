@@ -1,5 +1,7 @@
 var VideoListEntry = (props) => {
   var handleClickSelection = () => {
+    // console.log(props.state);
+    // props.state.selectedVideo = props.video;
     props.onSelect(props.video);
   };
 

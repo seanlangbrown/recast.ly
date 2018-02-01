@@ -3,8 +3,8 @@ class App extends React.Component {
     super(props);
     this.state = {
       searchText: 'intro to js',
-      videos: window.exampleVideoData,
-      selectedVideo: window.exampleVideoData[0]
+      videos: [],
+      selectedVideo: {}
     };
     console.log('state after in app: ', this.state.videos, this.state.selectedVideo);
   }
@@ -39,24 +39,31 @@ class App extends React.Component {
   }
 
   render() {
-
-    return (
-      <div>
-        <nav className="navbar">
-          <div className="col-md-6 offset-md-3">
-            <Search onSearch={this.search.bind(this)} onInputUpdate={this.searchInputUpdate.bind(this)} />
-          </div>
-        </nav>
-        <div className="row">
-          <div className="col-md-7">
-            <VideoPlayer video={this.state.selectedVideo} />
-          </div>
-          <div className="col-md-5">
-            <VideoList videos={this.state.videos} onSelect={this.selectVideo.bind(this)} />
+    if (this.state.videos.length) {
+      return (
+        <div>
+          <nav className="navbar">
+            <div className="col-md-6 offset-md-3">
+              <Search onSearch={this.search.bind(this)} onInputUpdate={this.searchInputUpdate.bind(this)} />
+            </div>
+          </nav>
+          <div className="row">
+            <div className="col-md-7">
+              <VideoPlayer video={this.state.selectedVideo} />
+            </div>
+            <div className="col-md-5">
+              <VideoList videos={this.state.videos} onSelect={this.selectVideo.bind(this)} />
+            </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div className="loading">
+          <h3>Loading content ... </h3>
+        </div>
+      );
+    }
   }
 }
 

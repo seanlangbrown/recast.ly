@@ -1,8 +1,13 @@
 var Search = (props) => {
+  var handleSearchClick = function () {
+    props.onSearch($('.form-control').val());
+    $('.form-control').val('');
+  };
+ 
   return (
     <div className="search-bar form-inline">
       <input className="form-control" type="text" onChange={e => props.onInputUpdate(e)} />
-      <button className="btn hidden-sm-down" onClick={props.onSearch}>
+      <button className="btn hidden-sm-down" onClick={handleSearchClick}>
         <span className="glyphicon glyphicon-search"></span>
       </button>
     </div>

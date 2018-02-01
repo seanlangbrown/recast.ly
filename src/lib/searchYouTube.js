@@ -21,7 +21,7 @@ var searchYouTube = function (options, callback) {
     data: dataOptions,
     dataType: 'json',
     success: (data) => {
-      console.log('data in searchYouTube ', data.items);
+      //console.log('data in searchYouTube ', data.items);
       callback(data.items);
     }
   });

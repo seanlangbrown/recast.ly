@@ -2,44 +2,76 @@ class App extends React.Component {
   constructor (props) {
     super(props);
     this.state = {
+      error: 'Loading content ...',
       searchText: 'intro to js',
       videos: [],
       selectedVideo: {}
     };
-    console.log('state after in app: ', this.state.videos, this.state.selectedVideo);
+    
+    this.debouncedSearch = _.debounce(function(options, callback) {
+      this.props.searchYouTube(options, callback);
+    }, 500);
+
+    //console.log('state after in app: ', this.state.videos, this.state.selectedVideo);
   }
 
-  search() {
+  search(queryText, initial) {
     var cb = (data) => {
-      console.log('data in callback ', data);
-      console.log('state before: ', this.state.videos, this.state.selectedVideo);
-      this.setState({
-        videos: data,
-        selectedVideo: data[0] 
-      });
-      console.log('state after in cb: ', this.state.videos, this.state.selectedVideo);
+      //console.log('data in callback ', data);
+      //console.log('state before: ', this.state.videos, this.state.selectedVideo);
+      if (data.length > 0) {
+        this.setState({
+          error: null,
+          videos: data,
+          selectedVideo: data[0] 
+        });
+      } else {
+        this.setState({
+          error: 'No Search Results :(',
+          videos: [],
+          selectedVideo: {}
+        });
+      }
+      //console.log('state after in cb: ', this.state.videos, this.state.selectedVideo);
     };
-    this.props.searchYouTube({query: this.state.searchText}, cb);
+    if (initial) {
+      this.props.searchYouTube({query: queryText}, cb);
+    } else {
+      this.debouncedSearch({query: queryText}, cb);
+    }
   }
+
+  
+
 
   searchInputUpdate(e) {
-    this.setState({
-      searchText: e.target.value
-    });
+    this.search(e.target.value, false);
   }
-  //select
+
   selectVideo(selection) {
     this.setState({
       selectedVideo: selection
     });
   }
 
-  componentDidMount() {
+  /*
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.state.videos.length === 0 || nextState.searchText !== this.state.searchText;
+  }
+  
+  componentDidUpdate() {
+    console.log('state queryText before search: ', this.state.searchText);
     this.search();
+  }
+  */
+
+  componentDidMount() {
+    //console.log('componentDidMount Search', + this.state.searchText);
+    this.search('intro to js', true);
   }
 
   render() {
-    if (this.state.videos.length) {
+    if (true || this.state.videos.length) {
       return (
         <div>
           <nav className="navbar">
@@ -49,7 +81,7 @@ class App extends React.Component {
           </nav>
           <div className="row">
             <div className="col-md-7">
-              <VideoPlayer video={this.state.selectedVideo} />
+              <VideoPlayer video={this.state.selectedVideo} errorMessage={this.state.error ? this.state.error : 'Loading Content ...'}/>
             </div>
             <div className="col-md-5">
               <VideoList videos={this.state.videos} onSelect={this.selectVideo.bind(this)} />

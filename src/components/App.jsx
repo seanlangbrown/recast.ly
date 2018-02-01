@@ -2,21 +2,24 @@ class App extends React.Component {
   constructor (props) {
     super(props);
     this.state = {
-      searchText: 'intro to javascript',
-      videos: [],
-      selectedVideo: {}
+      searchText: 'cat',
+      videos: window.exampleVideoData,
+      selectedVideo: window.exampleVideoData[0]
     };
-    this.search();
+    console.log('state after in app: ', this.state.videos, this.state.selectedVideo);
   }
 
   search() {
     var cb = (data) => {
+      console.log('data in callback ', data);
+      console.log('state before: ', this.state.videos, this.state.selectedVideo);
       this.setState({
         videos: data,
         selectedVideo: data[0] 
       });
+      console.log('state after in cb: ', this.state.videos, this.state.selectedVideo);
     };
-    this.props.searchYouTube({query: this.props.searchText}, cb);
+    this.props.searchYouTube({query: this.state.searchText}, cb);
   }
 
   searchInputUpdate(e) {
@@ -29,6 +32,10 @@ class App extends React.Component {
     this.setState({
       selectedVideo: selection
     });
+  }
+
+  componentDidMount() {
+    this.search();
   }
 
   render() {

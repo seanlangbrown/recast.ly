@@ -2,7 +2,7 @@ class App extends React.Component {
   constructor (props) {
     super(props);
     this.state = {
-      searchText: 'cat',
+      searchText: 'intro to js',
       videos: window.exampleVideoData,
       selectedVideo: window.exampleVideoData[0]
     };

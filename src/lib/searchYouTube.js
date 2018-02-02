@@ -6,7 +6,7 @@ var searchYouTube = function (options, callback) {
 
   var dataOptions = {
     q: options.query || 'js callback',
-    maxResults: options.max || 5,
+    maxResults: options.max || 20,
     part: 'snippet',
     key: options.key || window.YOUTUBE_API_KEY,
     type: options.type || 'video',

@@ -4,8 +4,9 @@ class App extends React.Component {
     this.state = {
       error: 'Loading content ...',
       searchText: 'intro to js',
-      videos: [],
-      selectedVideo: {}
+      videos: [[]],
+      selectedVideo: {},
+      resultsPage: 0
     };
     
     this.debouncedSearch = _.debounce(function(options, callback) {
@@ -22,13 +23,13 @@ class App extends React.Component {
       if (data.length > 0) {
         this.setState({
           error: null,
-          videos: data,
+          videos: this.paginate(data),
           selectedVideo: data[0] 
         });
       } else {
         this.setState({
           error: 'No Search Results :(',
-          videos: [],
+          videos: [[]],
           selectedVideo: {}
         });
       }
@@ -41,7 +42,28 @@ class App extends React.Component {
     }
   }
 
-  
+  paginate(videos, pageSize) {
+    pageSize = pageSize ? pageSize : 5;
+    var pages = [];
+    for (var i = 0; i < videos.length; i++) {
+      pages.push(videos.slice(i, i + pageSize));
+    }
+    console.log(pages);
+    return pages;
+  }
+
+  pageTurn(forward) {
+    console.log('pageTurn');
+    var page = this.state.resultsPage;
+    if (forward) {
+      page++;
+    } else {
+      page--;
+    }
+    this.setState({
+      resultsPage: page
+    });
+  }
 
 
   searchInputUpdate(e) {
@@ -71,31 +93,23 @@ class App extends React.Component {
   }
 
   render() {
-    if (true || this.state.videos.length) {
-      return (
-        <div>
-          <nav className="navbar">
-            <div className="col-md-6 offset-md-3">
-              <Search onSearch={this.search.bind(this)} onInputUpdate={this.searchInputUpdate.bind(this)} />
-            </div>
-          </nav>
-          <div className="row">
-            <div className="col-md-7">
-              <VideoPlayer video={this.state.selectedVideo} errorMessage={this.state.error ? this.state.error : 'Loading Content ...'}/>
-            </div>
-            <div className="col-md-5">
-              <VideoList videos={this.state.videos} onSelect={this.selectVideo.bind(this)} />
-            </div>
+    return (
+      <div>
+        <nav className="navbar">
+          <div className="col-md-6 offset-md-3">
+            <Search onSearch={this.search.bind(this)} onInputUpdate={this.searchInputUpdate.bind(this)} />
+          </div>
+        </nav>
+        <div className="row">
+          <div className="col-md-7">
+            <VideoPlayer video={this.state.selectedVideo} errorMessage={this.state.error ? this.state.error : 'Loading Content ...'}/>
+          </div>
+          <div className="col-md-5">
+            <VideoList videos={this.state.videos} onSelect={this.selectVideo.bind(this)} page={this.state.resultsPage} pages={this.state.videos.length} onPageTurn={this.pageTurn.bind(this)} />
           </div>
         </div>
-      );
-    } else {
-      return (
-        <div className="loading">
-          <h3>Loading content ... </h3>
-        </div>
-      );
-    }
+      </div>
+    );
   }
 }
 
